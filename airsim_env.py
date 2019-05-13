@@ -1,6 +1,5 @@
 import time
 import numpy as np
-# import setup_path 
 import airsim
 import config
 
@@ -75,6 +74,7 @@ class Env:
         # get quadrotor states
         quad_pos = self.client.getMultirotorState().kinematics_estimated.position
         quad_vel = self.client.getMultirotorState().kinematics_estimated.linear_velocity
+
         # decide whether done
         dead = has_collided or quad_pos.y_val <= outY
         done = dead or quad_pos.y_val >= goalY
@@ -108,8 +108,7 @@ class Env:
         elif quad_pos.y_val >= goals[self.level]:
             self.level += 1
             # reward = config.reward['forward'] * (1 + self.level / len(goals))
-            # reward = config.reward['goal'] * (1 + self.level / len(goals))
-            reward = config.reward['goal'] * (1 + self.level)
+            reward = config.reward['goal'] * (1 + self.level / len(goals))
         elif speed < speed_limit:
             reward = config.reward['slow']
         else:
