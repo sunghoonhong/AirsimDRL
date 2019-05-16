@@ -44,7 +44,7 @@ if __name__ == '__main__':
 
     name = args.agent
     filename = './save_stat/' + name + '_stat.csv'
-
+    
     episodes = []
     step = []
     score = []
@@ -60,7 +60,6 @@ if __name__ == '__main__':
     with open(filename, 'r') as f:
         read = csv.reader(f)
         for i, row in enumerate(read):
-            episodes.append(i)
             step.append(int(float(row[1])))
             score.append(float(row[2]))
             bestY.append(float(row[3]))
@@ -79,6 +78,7 @@ if __name__ == '__main__':
                 closs.append(float(row[6]))
                 level.append(int(float(row[7])))
 
+    episodes = [i for i in range(len(bestY))]    
     metrics = [
         score,
         step,
@@ -94,6 +94,7 @@ if __name__ == '__main__':
             metrics += [pmax]
         elif 'ddpg' in args.agent:
             metrics += [avgvel, avgQ, avgact]
+
     labels = [
         'Score',
         'Step',
