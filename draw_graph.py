@@ -70,7 +70,7 @@ if __name__ == '__main__':
             else:
                 if 'a2c' in args.agent:
                     pmax.append(float(row[4]))
-                elif 'ddpg' in args.agent:
+                elif 'ddpg' in args.agent or 'td3' in args.agent:
                     avgvel.append(float(row[4]))
                     avgQ.append(float(row[8]))
                     avgact.append(float(row[9]))
@@ -92,7 +92,7 @@ if __name__ == '__main__':
         metrics += [aloss]
         if 'a2c' in args.agent:
             metrics += [pmax]
-        elif 'ddpg' in args.agent:
+        elif 'ddpg' in args.agent or 'td3' in args.agent:
             metrics += [avgvel, avgQ, avgact]
 
     labels = [
@@ -109,6 +109,6 @@ if __name__ == '__main__':
         labels += ['Actor loss']
         if 'a2c' in args.agent:
             labels += ['P max']
-        elif 'ddpg' in args.agent:
+        elif 'ddpg' in args.agent or 'td3' in args.agent:
             labels += ['Avg velocity', 'Avg Q', 'Avg Action (noise)']
     drawall(name, episodes, metrics, labels, args.n, args.begin)
