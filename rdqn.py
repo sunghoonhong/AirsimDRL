@@ -323,8 +323,8 @@ if __name__ == '__main__':
                 avgQ /= timestep
 
                 # done
-                print('Ep %d: BestY %.3f Step %d Score %.2f AvgQ %.2f'
-                        % (episode, bestY, timestep, score, avgQ))
+                print('Ep %d: BestY %.3f Step %d Score %.2f AvgQ %.2f Info %s'
+                        % (episode, bestY, timestep, score, avgQ, info['status']))
 
                 episode += 1
             except KeyboardInterrupt:
