@@ -81,13 +81,38 @@ class RDDPGAgent(object):
         # image process
         image = Input(shape=self.state_size)
         image_process = BatchNormalization()(image)
-        image_process = TimeDistributed(Conv2D(32, (8, 8), activation='elu', padding='same', kernel_initializer='he_normal'))(image_process)
+        image_process = TimeDistributed(
+            Conv2D(16, (3, 3), activation='elu', padding='same', kernel_initializer='he_normal'))(image_process)
+        #72 128
+        image_process = TimeDistributed(Conv2D(16, (3, 3), activation='elu', kernel_initializer='he_normal'))(
+            image_process)
+        #70 126
+        image_process = TimeDistributed(Conv2D(16, (3, 3), activation='elu', kernel_initializer='he_normal'))(
+            image_process)
+        #68 124
         image_process = TimeDistributed(MaxPooling2D((2, 2)))(image_process)
-        image_process = TimeDistributed(Conv2D(32, (4, 4), activation='elu', kernel_initializer='he_normal'))(image_process)
+        #34 62
+        image_process = TimeDistributed(Conv2D(16, (3, 3), activation='elu', kernel_initializer='he_normal'))(
+            image_process)
+        #32 60
+        image_process = TimeDistributed(Conv2D(16, (3, 3), activation='elu', kernel_initializer='he_normal'))(
+            image_process)
+        #30 58
         image_process = TimeDistributed(MaxPooling2D((2, 2)))(image_process)
-        image_process = TimeDistributed(Conv2D(16, (3, 3), activation='elu', kernel_initializer='he_normal'))(image_process)
+        #15 29
+        image_process = TimeDistributed(Conv2D(32, (3, 3), activation='elu', kernel_initializer='he_normal'))(
+            image_process)
+        #13 27
+        image_process = TimeDistributed(Conv2D(32, (4, 4), activation='elu', kernel_initializer='he_normal'))(
+            image_process)
+        #10 24
         image_process = TimeDistributed(MaxPooling2D((2, 2)))(image_process)
-        image_process = TimeDistributed(Conv2D(8, (1, 1), activation='elu', kernel_initializer='he_normal'))(image_process)
+        #5 12
+        image_process = TimeDistributed(Conv2D(16, (3, 3), activation='elu', kernel_initializer='he_normal'))(
+            image_process)
+        #3 10
+        image_process = TimeDistributed(Conv2D(8, (1, 1), activation='elu', kernel_initializer='he_normal'))(
+            image_process)
         image_process = TimeDistributed(Flatten())(image_process)
         image_process = GRU(48, kernel_initializer='he_normal', use_bias=False)(image_process)
         image_process = BatchNormalization()(image_process)
@@ -95,13 +120,13 @@ class RDDPGAgent(object):
         
         # vel process
         vel = Input(shape=[self.vel_size])
-        # vel_process = Dense(3, kernel_initializer='he_normal', use_bias=False)(vel)
-        # vel_process = BatchNormalization()(vel_process)
-        # vel_process = Activation('tanh')(vel_process)
+        vel_process = Dense(48, kernel_initializer='he_normal', use_bias=False)(vel)
+        vel_process = BatchNormalization()(vel_process)
+        vel_process = Activation('tanh')(vel_process)
 
         # state process
-        # state_process = Concatenate()([image_process, vel_process])
-        state_process = image_process
+        state_process = Add()([image_process, vel_process])
+
         # Actor
         policy = Dense(32, kernel_initializer='he_normal', use_bias=False)(state_process)
         policy = BatchNormalization()(policy)
@@ -175,8 +200,7 @@ class RDDPGAgent(object):
 
     def get_action(self, state):
         policy = self.actor.predict(state)[0]
-        noise = [np.random.normal(scale=self.epsilon) for _ in range(self.action_size)]
-        noise = np.array(noise, dtype=np.float32)
+        noise = np.random.normal(0, self.epsilon, self.action_size)
         action = np.clip(policy + noise, self.action_low, self.action_high)
         return action, policy
 
@@ -215,8 +239,8 @@ class RDDPGAgent(object):
 
     def append_memory(self, state, action, reward, next_state, done):
         Q = self.critic.predict(state + [action.reshape(1, -1)])[0]
-        target_action = self.target_actor.predict(next_state)[0]
-        target_Q = self.target_critic.predict(next_state + [target_action.reshape(1, -1)])[0]
+        target_action = self.target_actor.predict(next_state)[0].reshape(1, -1)
+        target_Q = self.target_critic.predict(next_state + [target_action])[0]
         td = reward + (1 - done) * self.gamma * target_Q - Q
         td = abs(td[0])
         self.memory.add(td, (state, action, reward, next_state, done))
@@ -257,17 +281,12 @@ def transform_input(responses, img_height, img_width):
     image = np.array(image.resize((img_width, img_height)).convert('L'))
     cv2.imwrite('view.png', np.uint8(image))
     image = np.float32(image.reshape(1, img_height, img_width, 1))
-    image -= 128.0
-    image /= 128.0
-    # image /= 255.0
+    image /= 255.0
     return image
 
 def transform_action(action):
     real_action = np.array(action)
-    real_action[1] += 1.2
-    real_action[1] /= 1.5
-    # real_action[0] *= 0.5
-    # real_action[2] *= 0.5
+    real_action[1] += 0.5
     return real_action
 
 if __name__ == '__main__':
@@ -280,19 +299,19 @@ if __name__ == '__main__':
     parser.add_argument('--verbose',    action='store_true')
     parser.add_argument('--load_model', action='store_true')
     parser.add_argument('--play',       action='store_true')
-    parser.add_argument('--img_height', type=int,   default=80)
-    parser.add_argument('--img_width',  type=int,   default=80)
+    parser.add_argument('--img_height', type=int,   default=72)
+    parser.add_argument('--img_width',  type=int,   default=128)
     parser.add_argument('--actor_lr',   type=float, default=1e-4)
-    parser.add_argument('--critic_lr',  type=float, default=2e-4)
+    parser.add_argument('--critic_lr',  type=float, default=5e-4)
     parser.add_argument('--tau',        type=float, default=5e-3)
     parser.add_argument('--gamma',      type=float, default=0.99)
     parser.add_argument('--lambd',      type=float, default=0.90)
     parser.add_argument('--seqsize',    type=int,   default=5)
     parser.add_argument('--epoch',      type=int,   default=1)
     parser.add_argument('--batch_size', type=int,   default=64)
-    parser.add_argument('--memory_size',type=int,   default=100000)
+    parser.add_argument('--memory_size',type=int,   default=50000)
     parser.add_argument('--train_start',type=int,   default=5000)
-    parser.add_argument('--train_rate', type=int,   default=6)
+    parser.add_argument('--train_rate', type=int,   default=4)
     parser.add_argument('--epsilon',    type=float, default=1)
     parser.add_argument('--epsilon_end',type=float, default=0.01)
     parser.add_argument('--decay_step', type=int,   default=20000)
