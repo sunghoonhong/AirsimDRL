@@ -1,7 +1,8 @@
 # Deep Reinforcement Learning for Airsim Environment
 Quadrotor Self-Flight using Depth image
 
-[1 min madness video](https://youtu.be/C9P0V5Hif54)
+##### Check 1 min madness
+[![1 min madness video](/images/demo.gif)](https://youtu.be/C9P0V5Hif54)
 # Environment
 
 Unreal Engine 4
