@@ -52,7 +52,7 @@ It takes about 1 sec.
 
 ## Step
 Given action as 3 real value, process *moveByVelocity()* for 0.5 sec.  
-For delay caused by computing network, pause Simulation after 0.5 sed.
+For delay caused by computing network, pause Simulation after 0.5 sec.
 
 ## Done
 If a collision occurs, including landing, it would be dead.
