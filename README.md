@@ -86,5 +86,5 @@ Using *interpret_action()*, choose +/-1 along one axis among x, y, z or hovering
 - __Recurrent TD3 + PER (BEST)__
 
 # Result
-<img src="/save_graph/result_Best Record.png" width="400" height="200">
-<img src="/save_graph/result_Get Goal Prob.png" width="400" height="200">
+<img src="/save_graph/result_Best Record.png" height="200">
+<img src="/save_graph/result_Get Goal Prob..png" height="200">
