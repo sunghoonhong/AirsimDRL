@@ -1,10 +1,27 @@
 # Deep Reinforcement Learning for Airsim Environment
 Quadrotor Self-Flight using Depth image
 
+#### NOTE
+It is a capstone project for undergraduate course.
+It did work when I tried, but there were many trial and errors.
+I'm sorry that I didn't consider any reproducibility (e.g. random seed).
+
 ##### Check 1 min madness
 [![1 min madness video](/images/demo.gif)](https://youtu.be/C9P0V5Hif54)
 # Environment
 
+## Link to download executable
+#### NOTE: These executables can be run only on Windows OS.
+[Easy](https://drive.google.com/file/d/1ULoaIzosXYUE15_FZP8rY_s3PLYdo4HS/view?usp=sharing)
+[Normal](https://drive.google.com/file/d/1rVfLiR6mN08AAsgszaATG0HOqw_z48P1/view?usp=sharing)
+[Hard](https://drive.google.com/file/d/1HKyr_yCR0i4tMTF7uMVgeGwi_fF1JNRh/view?usp=sharing)
+
+
+## How To Use
+Execute the environment first.
+If you can see the rendered simulation, then run what you want to try (e.g. python td3_per.py)
+
+## Description
 Unreal Engine 4
 
 - Original environment
@@ -40,30 +57,30 @@ Unreal Engine 4
     <img src="/images/4.jpg" width="280" height="200">
 </p>
 
-## Parameter
+### Parameter
 - Timescale: 0.5 (Unit time for each step)
 - Clockspeed: 1.0 (Default)
 - Goals: [7, 17, 27.5, 45, 57]
 - Start position: (0, 0, 1.2)
 
-## Reset
+### Reset
 Respawn at the start position, and then take off and hover.  
 It takes about 1 sec.
 
-## Step
+### Step
 Given action as 3 real value, process *moveByVelocity()* for 0.5 sec.  
 For delay caused by computing network, pause Simulation after 0.5 sec.
 
-## Done
+### Done
 If a collision occurs, including landing, it would be dead.
 If x coordinate value is smaller than -0.5, it would be dead.
 If it gets to the final goal, the episode would be done.
 
-## State
+### State
 - Depth images from front camera (144 \* 256 or 72 \* 128)
 - (Optional) Linear velocity of quadrotor (x, y, z)
 
-## Action
+### Action
 - Discrete Action Space (Action size = 7)  
 Using *interpret_action()*, choose +/-1 along one axis among x, y, z or hovering.
 
@@ -71,7 +88,7 @@ Using *interpret_action()*, choose +/-1 along one axis among x, y, z or hovering
 - Continuous Action Space (Actions size = 3)  
 3 real values for each axis. I decided the scale as 1.5 and gave a bonus for y axis +0.5.
 
-## Reward
+### Reward
 - Dead: -2.0
 - Goal: 2.0 * (1 + level / # of total levels)
 - Too slow(Speed < 0.2): -0.05
