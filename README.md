@@ -12,9 +12,9 @@ I'm sorry that I didn't consider any reproducibility (e.g. random seed).
 
 ## Link to download executable
 #### NOTE: These executables can be run only on Windows OS.
-[Easy](https://drive.google.com/file/d/1ULoaIzosXYUE15_FZP8rY_s3PLYdo4HS/view?usp=sharing)
-[Normal](https://drive.google.com/file/d/1rVfLiR6mN08AAsgszaATG0HOqw_z48P1/view?usp=sharing)
-[Hard](https://drive.google.com/file/d/1HKyr_yCR0i4tMTF7uMVgeGwi_fF1JNRh/view?usp=sharing)
+[Easy](https://drive.google.com/file/d/1LigXGvDj0XZvgkffqBwe8XRWRmzMR93P/view?usp=sharing)
+[Normal](https://drive.google.com/file/d/1KtiHr_qpw37qq3PPiAKzLN9THm2aQZOU/view?usp=sharing)
+[Hard](https://drive.google.com/file/d/110mekUMdnYr5wNaEGVbsSZpwty12knzX/view?usp=sharing)
 
 
 ## How To Use
